@@ -13,6 +13,7 @@ import numpy as np
 import torch.nn as nn
 import torch
 from torch import pow, add, mul, div, sqrt
+from torch.nn import Parameter
 
 def lorentzActivation(w, w0, wp, g):
   #wp*wp*w*g/( (w0*w0 - w)*(w0*w0 - w) + w*w*g*g ), Complex component of lorentz activation function
@@ -22,7 +23,7 @@ def lorentzActivation(w, w0, wp, g):
   
 class LAF(nn.Module):
   
-"""
+  """
 Lorentz Activation Function with preset, fixed parameters
 """
 
@@ -36,7 +37,7 @@ Lorentz Activation Function with preset, fixed parameters
   
 class LLAF(nn.Module):
   
-"""
+  """
 Learnable Lorentz Activation function without preset parameters, except w0 = 0
 """
 
@@ -47,12 +48,12 @@ Learnable Lorentz Activation function without preset parameters, except w0 = 0
     if g == None:
       self.g = Parameter(torch.tensor(0.0))
     else:
-      self.g = Paramter(torch.tensor(g))
+      self.g = Parameter(torch.tensor(g))
       
     if wp == None:
       self.wp = Parameter(torch.tensor(0.0))
     else:
-      self.wp = Paramter(torch.tensor(wp))
+      self.wp = Parameter(torch.tensor(wp))
     
     self.g.requiresGrad = True
     self.wp.requiresGrad = True
