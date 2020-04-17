@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="00575d1a-297f-4886-8b04-1e64e70c979a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flag_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/flag_reader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model_maker.py" beforeDir="false" afterPath="$PROJECT_DIR$/model_maker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/parameters.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,20 +26,12 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Python.train">
     <configuration name="eval" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -218,13 +212,12 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Pass to Tesla working env" />
@@ -238,5 +231,11 @@
     <MESSAGE value="Network capacity shrinking" />
     <MESSAGE value="Readme updated for forward model, recent todo updated. eps_inf added to plotting in tensorboard." />
     <option name="LAST_COMMIT_MESSAGE" value="Readme updated for forward model, recent todo updated. eps_inf added to plotting in tensorboard." />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="600" height="428" key="javadoc.popup" timestamp="1587079906594">
+      <screen x="0" y="23" width="1680" height="986" />
+    </state>
+    <state width="600" height="428" key="javadoc.popup/0.23.1680.986@0.23.1680.986" timestamp="1587079906594" />
   </component>
 </project>

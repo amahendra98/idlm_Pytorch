@@ -13,6 +13,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 from torch import pow, add, mul, div, sqrt
+from .lorentz_activation import LAF, LLAF
 
 
 class Forward(nn.Module):
@@ -21,6 +22,7 @@ class Forward(nn.Module):
 
         # Set up whether this uses a Lorentzian oscillator, this is a boolean value
         self.use_lorentz = flags.use_lorentz
+        self.use_lorentz_activation = flags.use_lorentz_activation
         self.use_conv = flags.use_conv
 
         # Assert the last entry of the fc_num is a multiple of 3 (This is for Lorentzian part)
@@ -86,12 +88,17 @@ class Forward(nn.Module):
         out = G                                                         # initialize the out
         # Monitor the gradient list
         # For the linear part
+        if self.use_lorentz_activation:
+            actF = LAF
+        else:
+            actF = F.relu
+
         for ind, (fc, bn) in enumerate(zip(self.linears, self.bn_linears)):
             #print(out.size())
             if ind < len(self.linears) - 1:
-                out = F.relu(bn(fc(out)))                                   # ReLU + BN + Linear
+                out = actF(bn(fc(out)))                                   # ReLU + BN + Linear
             else:
-                out = bn(fc(out))
+                out = LAF(bn(fc(out)))
 
         # If use lorentzian layer, pass this output to the lorentzian layer
         if self.use_lorentz:

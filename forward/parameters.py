@@ -9,6 +9,7 @@ DATA_SET = 'meta_material'
 # Model Architectural Parameters
 
 USE_LORENTZ = False
+USE_LORENTZ_ACTIVATION = True
 USE_CONV = False                         # Whether use upconv layer when not using lorentz @Omar
 LINEAR = [8, 500, 500, 12]
 FIX_W0 = False
