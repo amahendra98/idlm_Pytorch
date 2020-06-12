@@ -10,11 +10,59 @@ import numpy as np
 
 # Pytorch module
 import torch.nn as nn
-import torch.nn.functional as F
 import torch
 from torch import pow, add, mul, div, sqrt
-from .lorentz_activation import LAF, LLAF
+import torch.nn.functional as F
+import torch.nn.parameter as Parameter
+from torch.nn.parameter import Parameter
+import torch.nn.init as init
 
+class NAC(torch.nn.Module):
+  def __init__(self, n_in, n_out):
+    super().__init__()
+    self.W_hat = Parameter(torch.Tensor(n_out, n_in))
+    self.M_hat = Parameter(torch.Tensor(n_out, n_in))
+    self.reset_parameters()
+
+  def reset_parameters(self):
+    #init.kaiming_uniform_(self.W_hat)
+    #init.kaiming_uniform_(self.M_hat)
+
+    init.uniform_(self.W_hat,-1,1)
+    init.uniform_(self.M_hat,-1,1)
+
+    #init.xavier_uniform_(self.W_hat)
+    #init.xavier_uniform_(self.M_hat)
+
+  def forward(self, input):
+    weights = torch.tanh(self.W_hat) * torch.sigmoid(self.M_hat)
+    return F.linear(input, weights)
+
+class NALU(torch.nn.Module):
+  def __init__(self, flags):
+    self.n_in = 2
+    self.n_out = 1
+    super().__init__()
+    self.NAC = NAC(self.n_in, self.n_out)
+    self.G = Parameter(torch.Tensor(1, self.n_in))
+    self.eps = 1e-6
+
+  def forward(self, input):
+    g = torch.sigmoid(F.linear(input, self.G))
+    y1 = g * self.NAC(input)
+    y2 = (1 - g) * torch.exp(self.NAC(torch.log(torch.abs(input) + self.eps)))
+    return y1 + y2
+
+class NALU_deriv(torch.nn.Module):
+    def __init__(self, flags):
+        super().__init__()
+        #self.W = Parameter(torch.tensor(np.array([1, -1])).float())
+        self.NAC = NAC(2,1)
+        self.eps = 1e-6
+
+    def forward(self, input):
+        return torch.exp(self.NAC(torch.log(input + self.eps)))
+        #return torch.exp(F.linear(torch.log(input), self.W))
 
 class Forward(nn.Module):
     def __init__(self, flags, fre_low=0.8, fre_high=1.5):
@@ -88,17 +136,15 @@ class Forward(nn.Module):
         out = G                                                         # initialize the out
         # Monitor the gradient list
         # For the linear part
-        if self.use_lorentz_activation:
-            actF = LAF
-        else:
-            actF = F.relu
 
         for ind, (fc, bn) in enumerate(zip(self.linears, self.bn_linears)):
             #print(out.size())
-            if ind < len(self.linears) - 1:
-                out = actF(bn(fc(out)))                                   # ReLU + BN + Linear
+            if ind < len(self.linears) - 2:
+                out = F.relu(bn(fc(out)))                                   # ReLU + BN + Linear
+            elif ind < len(self.linears) - 1:
+                out = F.relu(bn(fc(out)))
             else:
-                out = LAF(bn(fc(out)))
+                out = bn(fc(out))
 
         # If use lorentzian layer, pass this output to the lorentzian layer
         if self.use_lorentz:

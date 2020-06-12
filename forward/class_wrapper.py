@@ -85,9 +85,11 @@ class Network(object):
         1. ReduceLROnPlateau (decrease lr when validation error stops improving
         :return:
         """
-        return lr_scheduler.ReduceLROnPlateau(optimizer=self.optm, mode='min',
+        a = lr_scheduler.ReduceLROnPlateau(optimizer=self.optm, mode='min',
                                               factor=self.flags.lr_decay_rate,
                                               patience=10, verbose=True, threshold=1e-4)
+        b = lr_scheduler.CosineAnnealingWarmRestarts(optimizer=self.optm, T_0 = 30)
+        return a
 
     def save(self):
         """
@@ -137,7 +139,6 @@ class Network(object):
                 # torch.nn.utils.clip_grad_value_(self.model.parameters(), 10)
                 self.optm.step()                                    # Move one step the optimizer
                 train_loss.append(np.copy(loss.cpu().data.numpy()))                                  # Aggregate the loss
-
                 #############################################
                 # Extra test for err_test < err_train issue #
                 #############################################
@@ -156,8 +157,10 @@ class Network(object):
                 #train_avg_loss = train_loss.data.numpy() / (j+1)
                 self.log.add_scalar('Loss/train', train_avg_loss, epoch)
                 self.log.add_scalar('Loss/train_eval_mode', train_avg_eval_mode_loss, epoch)
+
                 if self.flags.use_lorentz:
                     for j in range(self.flags.num_plot_compare):
+                        print(j, "th dataset evaluating through on ", epoch, "th epoch")
                         f = self.compare_spectra(Ypred=logit[j, :].cpu().data.numpy(),
                                                  Ytruth=spectra[j, :].cpu().data.numpy(),
                                                  E2=self.model.e2[j, :, :],
@@ -197,6 +200,8 @@ class Network(object):
 
                 print("This is Epoch %d, training loss %.5f, validation loss %.5f" \
                       % (epoch, train_avg_loss, test_avg_loss ))
+
+                print("Train loss per batch", train_loss, "validation loss per batch", test_loss)
 
                 # Model improving, save the model down
                 if test_avg_loss < self.best_validation_loss:
